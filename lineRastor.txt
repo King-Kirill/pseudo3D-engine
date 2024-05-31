@@ -1,0 +1,306 @@
+void Game::addNewLine()
+{
+	std::cout << "Adding new line" << std::endl;
+
+	if (startPosX == endPosX)
+	{
+		if (startPosY > endPosY)
+		{
+			int linesAmount = (startPosY - endPosY) / ceil_h;
+			double dirX = 0;
+			double dirY = 1;
+
+			if (linesAmount == 1)
+			{
+				lineMap *newLine = new lineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
+				squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].isEmpty = false;
+				squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].pushBackInArray(*newLine);
+			}
+			else
+			{
+				endPosY = startPosY - ceil_h;
+				for (int i = 0; i < linesAmount; i++)
+				{
+					std::cout << "startPosY " << i << " : " << startPosY << std::endl;
+					std::cout << "endPosY " << i << " : " << endPosY << std::endl;
+
+					lineMap* newLine = new lineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
+					squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].isEmpty = false;
+					squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].pushBackInArray(*newLine);
+				
+					startPosY = startPosY - (ceil_h);
+					endPosY = endPosY - (ceil_h);
+				}
+			}
+		}
+		else if (startPosY < endPosY)
+		{
+			int linesAmount = (endPosY - startPosY) / ceil_h;
+			double dirX = 0;
+			double dirY = 1;
+
+			if (linesAmount == 1)
+			{
+				lineMap* newLine = new lineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
+				squareMapArray[int(startPosY / ceil_h)][int(startPosX / ceil_w)].isEmpty = false;
+				squareMapArray[int(startPosY / ceil_h)][int(startPosX / ceil_w)].pushBackInArray(*newLine);
+			}
+			else
+			{
+				startPosY = endPosY - ceil_h;
+				for (int i = 0; i < linesAmount; i++)
+				{
+					std::cout << "startPosY " << i << " : " << startPosY << std::endl;
+					std::cout << "endPosY " << i << " : " << endPosY << std::endl;
+
+					lineMap* newLine = new lineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
+					squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].isEmpty = false;
+					squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].pushBackInArray(*newLine);
+
+					startPosY = startPosY - (ceil_h);
+					endPosY = endPosY - (ceil_h);
+				}
+			}
+		}
+	}
+	else if (startPosY == endPosY)
+	{
+		if (startPosX > endPosX)
+		{
+			int linesAmount = (startPosX - endPosX) / ceil_w;
+			double dirX = 1;
+			double dirY = 0;
+
+			if (linesAmount == 1)
+			{
+				lineMap* newLine = new lineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
+				squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].isEmpty = false;
+				squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].pushBackInArray(*newLine);
+			}
+			else
+			{
+				endPosX = startPosX - ceil_w;
+				for (int i = 0; i < linesAmount; i++)
+				{
+					std::cout << "startPosX " << i << " : " << startPosX << std::endl;
+					std::cout << "endPosX " << i << " : " << endPosX << std::endl;
+
+					lineMap* newLine = new lineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
+					squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].isEmpty = false;
+					squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].pushBackInArray(*newLine);
+
+					startPosX = startPosX - (ceil_w);
+					endPosX = endPosX - (ceil_w);
+				}
+			}
+		}
+		else if (startPosX < endPosX)
+		{
+			int linesAmount = (endPosX - startPosX) / ceil_w;
+			double dirX = 1;
+			double dirY = 0;
+
+			if (linesAmount == 1)
+			{
+				lineMap* newLine = new lineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
+				squareMapArray[int(startPosY / ceil_h)][int(startPosX / ceil_w)].isEmpty = false;
+				squareMapArray[int(startPosY / ceil_h)][int(startPosX / ceil_w)].pushBackInArray(*newLine);
+			}
+			else
+			{
+				startPosX = endPosX - ceil_w;
+				for (int i = 0; i < linesAmount; i++)
+				{
+					std::cout << "startPosX " << i << " : " << startPosX << std::endl;
+					std::cout << "endPosX " << i << " : " << endPosX << std::endl;
+
+					lineMap* newLine = new lineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
+					squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].isEmpty = false;
+					squareMapArray[int(endPosY / ceil_h)][int(endPosX / ceil_w)].pushBackInArray(*newLine);
+
+					startPosX = startPosX - (ceil_w);
+					endPosX = endPosX - (ceil_w);
+				}
+			}
+		}
+	}
+	else
+	{
+		ddaNewDiagonal(startPosX, startPosY, endPosX, endPosY);
+	}
+}
+
+void Game::ddaNewDiagonal(double startPointX, double startPointY, double endPointX, double endPointY)
+{
+	double lineStartX = startPointX;
+	double lineStartY = startPointY;
+	double lineEndX = 0;
+	double lineEndY = 0;
+
+	int cooficientSmall = 0;
+	int cooficientBig = 0;
+
+	double lineLengthX = abs(endPointX - startPointX);
+	double lineLengthY = abs(endPointY - startPointY);
+
+	if (lineLengthX > lineLengthY)
+	{
+		cooficientSmall = lineLengthX / ceil_w;
+		cooficientBig = lineLengthY / ceil_h;
+	}
+	else
+	{
+		cooficientSmall = lineLengthY / ceil_h;
+		cooficientBig = lineLengthX / ceil_w;
+	}
+
+	double lineDirX = (lineLengthX / cooficientSmall);
+	double lineDirY = (lineLengthY / cooficientSmall);
+
+	if ((startPointX > endPointX) && (startPointY > endPointY))
+	{
+		lineDirX = -(lineDirX / ceil_w);
+		lineDirY = -(lineDirY / ceil_h);
+	}
+	else if ((startPointX < endPointX) && (startPointY < endPointY))
+	{
+		lineDirX = (lineDirX / ceil_w);
+		lineDirY = (lineDirY / ceil_h);
+	}
+	else if((startPointX < endPointX) && (startPointY > endPointY))
+	{
+		lineDirX = (lineDirX / ceil_w);
+		lineDirY = -(lineDirY / ceil_h);
+	}
+	else if ((startPointX > endPointX) && (startPointY < endPointY))
+	{
+		lineDirX = -(lineDirX / ceil_w);
+		lineDirY = (lineDirY / ceil_h);
+	}
+
+	double stepX = lineDirX * ceil_w;
+	double stepY = lineDirY * ceil_h;
+
+	double deltaLengthX = 0;
+	double deltaLengthY = 0;
+
+	double previousStartX = 0;
+	double previousStartY = 0;
+
+	if (abs(lineDirX) > abs(lineDirY))
+	{
+		double deltaDistX = sqrt(pow(lineDirX, 2) + pow(lineDirY, 2)) * ceil_w;
+		double deltaDistY = sqrt(pow((lineLengthY / cooficientBig), 2) + pow((lineLengthX / cooficientBig), 2));
+
+		double stepsYlength = ceil_h;
+		deltaLengthY += deltaDistY;
+
+		while ((lineStartX != endPointX) && (lineStartY != endPointY))
+		{
+			if (deltaLengthY <= deltaLengthX)
+			{
+				lineEndX = sqrt(pow(deltaLengthY, 2) - pow(stepsYlength, 2));
+				lineEndY = stepsYlength;
+
+				lineEndX = startPointX + ((stepX / abs(stepX)) * lineEndX);
+				lineEndY = startPointY + ((stepY / abs(stepY)) * lineEndY);
+ 
+				lineMap* newLine1 = new lineMap(previousStartX, previousStartY, lineEndX, lineEndY, lineDirX, lineDirY);
+				squareMapArray[int(previousStartY / ceil_h)][int(previousStartX / ceil_w)].isEmpty = false;
+				squareMapArray[int(previousStartY / ceil_h)][int(previousStartX / ceil_w)].pushBackInArray(*newLine1);
+
+				lineMap* newLine2 = new lineMap(lineEndX, lineEndY, lineStartX, lineStartY, lineDirX, lineDirY);
+				squareMapArray[int(lineEndY / ceil_h)][int(lineEndX / ceil_w)].isEmpty = false;
+				squareMapArray[int(lineEndY / ceil_h)][int(lineEndX / ceil_w)].pushBackInArray(*newLine2);
+				
+				stepsYlength += ceil_h;
+				deltaLengthY += deltaDistY;
+			}
+			else if (deltaLengthY > deltaLengthX)
+			{
+				deltaLengthX += deltaDistX;
+
+				previousStartX = lineStartX;
+				previousStartY = lineStartY;
+
+				lineEndX = lineStartX + stepX;
+				lineEndY = lineStartY + stepY;
+
+				lineMap* newLine = new lineMap(lineStartX, lineStartY, lineEndX, lineEndY, lineDirX, lineDirY);
+				squareMapArray[int(lineEndY / ceil_h)][int(lineEndX / ceil_w)].isEmpty = false;
+				squareMapArray[int(lineEndY / ceil_h)][int(lineEndX / ceil_w)].pushBackInArray(*newLine);
+
+				lineStartX = lineEndX;
+				lineStartY = lineEndY;
+			}
+		}
+	}
+	else if(abs(lineDirX) < abs(lineDirY))
+	{
+		double deltaDistX = sqrt(pow((lineLengthX / cooficientBig), 2) + pow((lineLengthY / cooficientBig), 2));
+		double deltaDistY = sqrt(pow(lineDirY, 2) + pow(lineDirX, 2))* ceil_h;
+
+		double stepsXlength = ceil_w;
+		deltaLengthX += deltaDistX;
+
+		while ((lineStartX != endPointX) && (lineStartY != endPointY))
+		{
+			if (deltaLengthX <= deltaLengthY)
+			{
+				lineEndX = stepsXlength;
+				lineEndY = sqrt(pow(deltaLengthX, 2) - pow(stepsXlength, 2)); 
+
+				lineEndX = startPointX + ((stepX / abs(stepX)) * lineEndX);
+				lineEndY = startPointY + ((stepY / abs(stepY)) * lineEndY);
+
+				lineMap* newLine1 = new lineMap(previousStartX, previousStartY, lineEndX, lineEndY, lineDirX, lineDirY);
+				squareMapArray[int(previousStartY / ceil_h)][int(previousStartX / ceil_w)].isEmpty = false;
+				squareMapArray[int(previousStartY / ceil_h)][int(previousStartX / ceil_w)].pushBackInArray(*newLine1);
+
+				lineMap* newLine2 = new lineMap(lineEndX, lineEndY, lineStartX, lineStartY, lineDirX, lineDirY);
+				squareMapArray[int(lineEndY / ceil_h)][int(lineEndX / ceil_w)].isEmpty = false;
+				squareMapArray[int(lineEndY / ceil_h)][int(lineEndX / ceil_w)].pushBackInArray(*newLine2);
+
+				stepsXlength += ceil_w;
+				deltaLengthX += deltaDistX;
+			}
+			else if (deltaLengthX > deltaLengthY)
+			{
+				deltaLengthY += deltaDistY;
+
+				previousStartY = lineStartY;
+				previousStartX = lineStartX;
+
+				lineEndX = lineStartX + stepX;
+				lineEndY = lineStartY + stepY;
+
+				lineMap* newLine = new lineMap(lineStartX, lineStartY, lineEndX, lineEndY, lineDirX, lineDirY);
+				squareMapArray[int(lineStartY / ceil_h)][int(lineStartX / ceil_w)].isEmpty = false;
+				squareMapArray[int(lineStartY / ceil_h)][int(lineStartX / ceil_w)].pushBackInArray(*newLine);
+
+				lineStartX = lineEndX;
+				lineStartY = lineEndY;
+			}
+		}
+	}
+	else
+	{
+		while ((lineStartX != endPointX) && (lineStartY != endPointY))
+		{
+			lineEndX = lineStartX + stepX;
+			lineEndY = lineStartY + stepY;
+
+			lineMap* newLine = new lineMap(lineStartX, lineStartY, lineEndX, lineEndY, lineDirX, lineDirY);
+			squareMapArray[int(lineStartY / ceil_h)][int(lineStartX / ceil_w)].isEmpty = false;
+			squareMapArray[int(lineStartY / ceil_h)][int(lineStartX / ceil_w)].pushBackInArray(*newLine);
+
+			lineStartX = lineEndX;
+			lineStartY = lineEndY;
+		}
+	}
+}  
+
+bool Game::running()
+{
+	return isRunning;
+}
