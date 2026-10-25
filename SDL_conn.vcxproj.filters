@@ -21,15 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="GameSDL.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="MapDraw.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Исходные файлы\imgui</Filter>
     </ClCompile>
@@ -51,41 +42,53 @@
     <ClCompile Include="imgui\imgui_tables.cpp">
       <Filter>Исходные файлы\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="ConstParams.cpp">
+    <ClCompile Include="src\Camera.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="GridDots.cpp">
+    <ClCompile Include="src\MapDraw.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="TempParams.cpp">
+    <ClCompile Include="src\PathEndPosition.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="LineMap.cpp">
+    <ClCompile Include="src\Pseudo3D.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="SquareMap.cpp">
+    <ClCompile Include="src\SectorMap.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="PathEndPosition.cpp">
+    <ClCompile Include="src\SquareMap.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Pseudo3D.cpp">
+    <ClCompile Include="src\TempParams.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="SectorMap.cpp">
+    <ClCompile Include="src\VectorToLines.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="VectorToLines.cpp">
+    <ClCompile Include="src\ConstParams.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameCharacter.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameSDL.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GridDots.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LineMap.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CameraDot.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameSDL.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="MapDraw.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Файлы заголовков\imgui</Filter>
     </ClInclude>
@@ -110,32 +113,52 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Файлы заголовков\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="ConstParams.h">
+    <ClInclude Include="headers\Camera.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="GridDots.h">
+    <ClInclude Include="headers\ConstParams.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="TempParams.h">
+    <ClInclude Include="headers\GameCharacter.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="LineMap.h">
+    <ClInclude Include="headers\GameSDL.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="SquareMap.h">
+    <ClInclude Include="headers\GridDots.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="PathEndPosition.h">
+    <ClInclude Include="headers\LineMap.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Pseudo3D.h">
+    <ClInclude Include="headers\MapDraw.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="SectorMap.h">
+    <ClInclude Include="headers\PathEndPosition.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="VectorToLines.h">
+    <ClInclude Include="headers\Pseudo3D.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="headers\SectorMap.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\SquareMap.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\TempParams.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\VectorToLines.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\CameraDot.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgui.ini" />
+    <None Include="SDL2.dll" />
+    <None Include="src\CppProperties.json" />
   </ItemGroup>
 </Project>
