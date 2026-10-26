@@ -63,6 +63,7 @@ void GameCharacter::createCamera()
 	if (!cameraExists)
 	{
 		cameraExists = true;
+		newCamera.reserveMemmory();
 	}
 }
 
@@ -86,7 +87,7 @@ void GameCharacter::setFOV(double field_of_view)
 
 void GameCharacter::destroyCamera()
 {
-	newCamera.clearCameraDots();
+	newCamera.clearReservedMemmory();
 	this->fov = 0;
 	this->raycast_length = 0;
 }

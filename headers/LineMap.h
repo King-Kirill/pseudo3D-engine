@@ -34,12 +34,12 @@ public:
 
 	//указатели на смежные сектора для определения принадлежности линии тому или иному сектору
 	//для луча игрока в пределах pDirX и pDirY
-	std::weak_ptr<SectorMap> inside_sectorPtr;
+	SectorMap* inside_sectorPtr;
 	//для луча противоположному в направлении pDirX и pDirY
-	std::weak_ptr<SectorMap> outside_sectorPtr;
+	SectorMap* outside_sectorPtr;
 
 	//массив указателей unique_ptr на расторизованные прямые для текущей линии
-	std::vector<std::shared_ptr<LineMap>> vectorToLines;
+	std::vector<LineMap*> vectorToLines;
 
 	//массив текстур на стену
 	//аналогично два массива - один для внутренней стороны стены, другой для внешней
@@ -51,10 +51,10 @@ public:
 
 	//если линия используется одним сектором (если pDirX и pDirY == 0)
 	//указатель на сектор которому принадлежит линия (остается т.к на случай переопределения в приоритете будут смежные указатели)
-	std::weak_ptr<SectorMap> sectorObj;
+	SectorMap* sectorObj;
 
 	//указатель расторизованной прямой на не расторизованную (оригинальную)
-	std::weak_ptr<LineMap> linePtr;
+	LineMap* linePtr;
 
 	bool operator==(const LineMap& other) const;
 	bool operator!=(const LineMap& other) const;

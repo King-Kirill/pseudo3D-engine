@@ -3,6 +3,8 @@ extern const int img_h;
 extern const int img_w;
 extern const int dev_zone_w;
 
+extern const int max_camera_dots_reserved;
+
 extern const int additional_window_h;
 extern const int additional_window_w;
 

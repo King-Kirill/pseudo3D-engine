@@ -4,6 +4,8 @@ const int img_h = 600;
 const int img_w = 1200;
 const int dev_zone_w = 300;
 
+const int max_camera_dots_reserved = 20;
+
 const int additional_window_h = 150;
 const int additional_window_w = 300;
 

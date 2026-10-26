@@ -1,25 +1,24 @@
 #include "../headers/Pseudo3D.h"
 #include <thread>
 
-void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>& sectors, std::vector<std::shared_ptr<SectorMap>>& sectorsArray)
+void Pseudo3D::rastorization(std::vector<std::vector<LineMap*>>& sectors, std::vector<SectorMap*>& sectorsArray)
 {
-	std::vector<std::shared_ptr<LineMap>> repeatingLines;
+	std::vector<LineMap*> repeatingLines;
 	/*getArrForRepeat(sectors, repeatingLines);*/
 
 	for (int k = 0; k < sectors.size(); k++)
 	{
-		std::vector<std::shared_ptr<LineMap>>& sectorPaths = sectors[k];
+		std::vector<LineMap*>& sectorPaths = sectors[k];
 		SectorMap* newSector = new SectorMap(sectorPaths);
-		std::shared_ptr<SectorMap> ptr(newSector);
 		
-		sectorsArray.push_back(ptr);
+		sectorsArray.push_back(newSector);
 
 		for (int i = 0; i < sectorPaths.size(); i++)
 		{
-			checkForRepeat(repeatingLines, *sectorPaths[i], sectorPaths, ptr);
+			checkForRepeat(repeatingLines, *sectorPaths[i], sectorPaths, newSector);
 
 			LineMap& tempSectorPath = *sectorPaths[i];
-			std::shared_ptr<LineMap> vectorPtr(sectorPaths[i]);
+			LineMap* vectorPtr = new LineMap(*sectorPaths[i]);
 
 			double startPosX = tempSectorPath.startPosX;
 			double startPosY = tempSectorPath.startPosY;
@@ -127,7 +126,7 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 						double newY = startPosY + sideDist_X * dirY;
 
 						if (newX != prevEndX || newY != prevEndY)
-							addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, vectorPtr);
+							addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, newSector, vectorPtr);
 
 						prevEndX = newX;
 						prevEndY = newY;
@@ -142,7 +141,7 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 						double newY = startPosY + sideDist_Y * dirY;
 
 						if (newX != prevEndX || newY != prevEndY)
-							addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, vectorPtr);
+							addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, newSector, vectorPtr);
 
 						prevEndX = newX;
 						prevEndY = newY;
@@ -157,7 +156,7 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 						double newY = startPosY + sideDist_X * dirY;
 
 						if (newX != prevEndX || newY != prevEndY)
-							addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, vectorPtr);
+							addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, newSector, vectorPtr);
 
 						prevEndX = newX;
 						prevEndY = newY;
@@ -177,7 +176,7 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 							double newY = startPosY + sideDist_X * dirY;
 
 							if (newX != prevEndX || newY != prevEndY)
-								addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, vectorPtr);
+								addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, newSector, vectorPtr);
 
 							prevEndX = newX;
 							prevEndY = newY;
@@ -191,7 +190,7 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 							double newY = startPosY + sideDist_Y * dirY;
 
 							if (newX != prevEndX || newY != prevEndY)
-								addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, vectorPtr);
+								addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, newSector, vectorPtr);
 
 							prevEndX = newX;
 							prevEndY = newY;
@@ -206,7 +205,7 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 				{
 					// если вдруг в момент выхода из цикла sideDist_X == sideDist_Y и
 					// последний угол уже был добавлен, проверка выше не даст дубль-сегмент
-					addNewLine(prevEndX, prevEndY, endPosX, endPosY, dirX, dirY, ptr, vectorPtr);
+					addNewLine(prevEndX, prevEndY, endPosX, endPosY, dirX, dirY, newSector, vectorPtr);
 
 					prevEndX = endPosX;
 					prevEndY = endPosY;
@@ -240,7 +239,7 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 					}
 
 					side = 1;
-					addNewLine(startPosX, startPosY, startPosX, startPosY + (step * squareHeight), dirX, dirY, ptr, vectorPtr);
+					addNewLine(startPosX, startPosY, startPosX, startPosY + (step * squareHeight), dirX, dirY, newSector, vectorPtr);
 					steps -= 1;
 
 					endPosY = startPosY + (step * squareHeight);
@@ -267,7 +266,7 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 					}
 
 					side = 0;
-					addNewLine(startPosX, startPosY, startPosX + (step * squareWidth), startPosY, dirX, dirY, ptr, vectorPtr);
+					addNewLine(startPosX, startPosY, startPosX + (step * squareWidth), startPosY, dirX, dirY, newSector, vectorPtr);
 					steps -= 1;
 
 					endPosX = startPosX + (step * squareWidth);
@@ -289,17 +288,15 @@ void Pseudo3D::rastorization(std::vector<std::vector<std::shared_ptr<LineMap>>>&
 						steps -= 1;
 					}
 
-					addNewLine(startPosX, startPosY, endPosX, endPosY, dirX, dirY, ptr, vectorPtr);
+					addNewLine(startPosX, startPosY, endPosX, endPosY, dirX, dirY, newSector, vectorPtr);
 				}
 			}
 		}
 	}
 }
 
-void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<SectorMap>& sectorPtr)
+void Pseudo3D::rastorLine(LineMap*& linePtr, SectorMap*& sectorPtr)
 {
-	auto ptr = sectorPtr.lock();
-
 	double startPosX = linePtr->startPosX;
 	double startPosY = linePtr->startPosY;
 	double endPosX = linePtr->endPosX;
@@ -406,7 +403,7 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 				double newY = startPosY + sideDist_X * dirY;
 
 				if (newX != prevEndX || newY != prevEndY)
-					addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, linePtr);
+					addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, sectorPtr, linePtr);
 
 				prevEndX = newX;
 				prevEndY = newY;
@@ -421,7 +418,7 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 				double newY = startPosY + sideDist_Y * dirY;
 
 				if (newX != prevEndX || newY != prevEndY)
-					addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, linePtr);
+					addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, sectorPtr, linePtr);
 
 				prevEndX = newX;
 				prevEndY = newY;
@@ -436,7 +433,7 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 				double newY = startPosY + sideDist_X * dirY;
 
 				if (newX != prevEndX || newY != prevEndY)
-					addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, linePtr);
+					addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, sectorPtr, linePtr);
 
 				prevEndX = newX;
 				prevEndY = newY;
@@ -456,7 +453,7 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 					double newY = startPosY + sideDist_X * dirY;
 
 					if (newX != prevEndX || newY != prevEndY)
-						addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, linePtr);
+						addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, sectorPtr, linePtr);
 
 					prevEndX = newX;
 					prevEndY = newY;
@@ -470,7 +467,7 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 					double newY = startPosY + sideDist_Y * dirY;
 
 					if (newX != prevEndX || newY != prevEndY)
-						addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, ptr, linePtr);
+						addNewLine(prevEndX, prevEndY, newX, newY, dirX, dirY, sectorPtr, linePtr);
 
 					prevEndX = newX;
 					prevEndY = newY;
@@ -485,7 +482,7 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 		{
 			// если вдруг в момент выхода из цикла sideDist_X == sideDist_Y и
 			// последний угол уже был добавлен, проверка выше не даст дубль-сегмент
-			addNewLine(prevEndX, prevEndY, endPosX, endPosY, dirX, dirY, ptr, linePtr);
+			addNewLine(prevEndX, prevEndY, endPosX, endPosY, dirX, dirY, sectorPtr, linePtr);
 
 			prevEndX = endPosX;
 			prevEndY = endPosY;
@@ -519,7 +516,7 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 			}
 
 			side = 1;
-			addNewLine(startPosX, startPosY, startPosX, startPosY + (step * squareHeight), dirX, dirY, ptr, linePtr);
+			addNewLine(startPosX, startPosY, startPosX, startPosY + (step * squareHeight), dirX, dirY, sectorPtr, linePtr);
 			steps -= 1;
 
 			endPosY = startPosY + (step * squareHeight);
@@ -546,7 +543,7 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 			}
 
 			side = 0;
-			addNewLine(startPosX, startPosY, startPosX + (step * squareWidth), startPosY, dirX, dirY, ptr, linePtr);
+			addNewLine(startPosX, startPosY, startPosX + (step * squareWidth), startPosY, dirX, dirY, sectorPtr, linePtr);
 			steps -= 1;
 
 			endPosX = startPosX + (step * squareWidth);
@@ -568,22 +565,20 @@ void Pseudo3D::rastorLine(std::shared_ptr<LineMap>& linePtr, std::weak_ptr<Secto
 				steps -= 1;
 			}
 
-			addNewLine(startPosX, startPosY, endPosX, endPosY, dirX, dirY, ptr, linePtr);
+			addNewLine(startPosX, startPosY, endPosX, endPosY, dirX, dirY, sectorPtr, linePtr);
 		}
 	}
-
-	clearExposedSquareMapArray(); // очистка просроченых указателей
 }
 
 
-void Pseudo3D::performBSP(std::vector<std::vector<std::shared_ptr<LineMap>>>& sectors)
+void Pseudo3D::performBSP(std::vector<std::vector<LineMap*>>& sectors)
 {
 	//копируем текущий массив векторов в прошлый
 	previousVectorsMapArray = vectorsMapArray;
 
 	//временный массив для сохранения секторов
 	std::vector<std::vector<int>> sectorsArray;
-	std::vector<std::vector<std::shared_ptr<LineMap>>> sectorPaths;
+	std::vector<std::vector<LineMap*>> sectorPaths;
 
 	//заводим массив содержащий path ID, где будут содержаться ID которые не будут проверяться
 	std::vector<int> notCheckPaths;
@@ -591,12 +586,12 @@ void Pseudo3D::performBSP(std::vector<std::vector<std::shared_ptr<LineMap>>>& se
 	int currentPathId = 0;
 
 	//массив для сохранения найденных векторров выходящих из одной общей точки
-	std::vector<std::shared_ptr<LineMap>> foundLines;
-	std::vector<std::shared_ptr<LineMap>> lines;
+	std::vector<LineMap*> foundLines;
+	std::vector<LineMap*> lines;
 
 	//каждый раз после добавления вектора удаляем его из прошлого массива, сокращение итераций цикла
 	vectorsMapArray[0]->shdCheckSector = false;
-	lines.push_back(vectorsMapArray[0]); 
+	lines.push_back(std::move(vectorsMapArray[0]));
 	vectorsMapArray.erase(vectorsMapArray.begin() + 0);
 
 	//инициализируем первый путь массивом lines
@@ -612,7 +607,7 @@ void Pseudo3D::performBSP(std::vector<std::vector<std::shared_ptr<LineMap>>>& se
 			if (shouldCheck(j, notCheckPaths))
 			{
 				//каждый раз берется новый путь для заполнения его линиями
-				std::vector<std::shared_ptr<LineMap>>& tempLineMapComponent = sectorPaths[j];
+				std::vector<LineMap*>& tempLineMapComponent = sectorPaths[j];
 
 				//проверяем все дотупные вектора, имеют ли они общее начало с выбранным вектором
 				for (int i = 0; i < vectorsMapArray.size(); i++)
@@ -675,10 +670,10 @@ void Pseudo3D::performBSP(std::vector<std::vector<std::shared_ptr<LineMap>>>& se
 
 						std::string pathName = "path" + std::to_string(currentPathId);
 
-						std::vector<std::shared_ptr<LineMap>> newPath;
-						newPath.push_back(foundLines[i]);
+						std::vector<LineMap*> newPath;
+						newPath.push_back(std::move(foundLines[i]));
 
-						sectorPaths.push_back(newPath);
+						sectorPaths.push_back(std::move(newPath));
 
 						tempNotToCheckPaths.push_back(currentPathId);
 						createdPaths.push_back(currentPathId);
@@ -693,7 +688,7 @@ void Pseudo3D::performBSP(std::vector<std::vector<std::shared_ptr<LineMap>>>& se
 				{
 					//делаем проверку пути, является ли путь вхождением в другой путь
 					LineMap& tempVector = *tempLineMapComponent[tempLineMapComponent.size() - 1];
-					int pathId = checkPath(sectorPaths, tempVector, sectors);
+					int pathId = checkPath(sectorPaths, tempVector);
 
 					//-1 - значит нет такого пути в который входил бы текущий путь
 					if (pathId == -1)
@@ -739,11 +734,11 @@ void Pseudo3D::performBSP(std::vector<std::vector<std::shared_ptr<LineMap>>>& se
 				//инициализируем новый путь массивом lines
 				currentPathId += 1;
 
-				std::vector<std::shared_ptr<LineMap>> lines;
+				std::vector<LineMap*> lines;
 				vectorsMapArray[0]->shdCheckSector = false;
-				lines.push_back(vectorsMapArray[0]);
+				lines.push_back(std::move(vectorsMapArray[0]));
 				vectorsMapArray.erase(vectorsMapArray.begin() + 0);
-				sectorPaths.push_back(lines);
+				sectorPaths.push_back(std::move(lines));
 			}
 			else
 			{
@@ -755,24 +750,24 @@ void Pseudo3D::performBSP(std::vector<std::vector<std::shared_ptr<LineMap>>>& se
 	for (int i = 0; i < sectorsArray.size(); i++)
 	{
 		std::vector<int> pathIndexes = sectorsArray[i];
-		std::vector<std::shared_ptr<LineMap>> newSector;
+		std::vector<LineMap*> newSector;
 
 		for (int j = 0; j < pathIndexes.size(); j++)
 		{
 			newSector.insert(newSector.end(), sectorPaths[pathIndexes[j]].begin(), sectorPaths[pathIndexes[j]].end());
 		}
 		clearUnusedMemmory_simpleArr(newSector);
-		sectors.push_back(newSector);
+		sectors.push_back(std::move(newSector));
 	}
 
 	vectorsMapArray = previousVectorsMapArray;
 }
 
-int Pseudo3D::checkPath(std::vector<std::vector<std::shared_ptr<LineMap>>>& sectorPaths, LineMap& tempVector, std::vector<std::vector<std::shared_ptr<LineMap>>>& sectors)
+int Pseudo3D::checkPath(std::vector<std::vector<LineMap*>>& sectorPaths, LineMap& tempVector)
 {
 	for (int i = 0; i < sectorPaths.size(); i++)
 	{
-		std::vector<std::shared_ptr<LineMap>>& pathFirst = sectorPaths[i];
+		std::vector<LineMap*>& pathFirst = sectorPaths[i];
 		LineMap& otherPath = *pathFirst[pathFirst.size() - 1];
 		LineMap& otherPathZero = *pathFirst[0];
 
@@ -812,19 +807,19 @@ int Pseudo3D::checkPathPos(std::vector<PathEndPosition>& pathEndPositions, PathE
 	return -1;
 }
 
-int Pseudo3D::checkAmountOfPaths(std::vector<std::vector<std::shared_ptr<LineMap>>>& sectorPaths, std::vector<std::shared_ptr<LineMap>>& lineArr, std::vector<int>& tempNotToCheckPaths, int currPathId, std::vector<int>& recentPaths, std::vector<int>& notCheckPaths, std::vector<std::vector<int>>& sectorsArray, std::vector<std::vector<std::shared_ptr<LineMap>>>& sectors)
+int Pseudo3D::checkAmountOfPaths(std::vector<std::vector<LineMap*>>& sectorPaths, std::vector<LineMap*>& lineArr, std::vector<int>& tempNotToCheckPaths, int currPathId, std::vector<int>& recentPaths, std::vector<int>& notCheckPaths, std::vector<std::vector<int>>& sectorsArray, std::vector<std::vector<LineMap*>>& sectors)
 {
 	for (int j = 0; j < lineArr.size(); j++)
 	{
 		//проверям нужно ли нам проверять этот path или нет
 		if (shouldCheck(recentPaths[j], notCheckPaths))
 		{
-			std::vector<std::shared_ptr<LineMap>>& tempPathArr = sectorPaths[recentPaths[j]];
+			std::vector<LineMap*>& tempPathArr = sectorPaths[recentPaths[j]];
 			LineMap& tempPath = *tempPathArr[tempPathArr.size() - 1];
-			int pathId = checkPath(sectorPaths, tempPath, sectors);
+			int pathId = checkPath(sectorPaths, tempPath);
 
 			//заводим массив найденных линий
-			std::vector<std::shared_ptr<LineMap>> foundLines;
+			std::vector<LineMap*> foundLines;
 
 			for (int i = 0; i < vectorsMapArray.size(); i++)
 			{
@@ -845,7 +840,7 @@ int Pseudo3D::checkAmountOfPaths(std::vector<std::vector<std::shared_ptr<LineMap
 					vectorMap.dirY = -(vectorMap.dirY);
 
 					vectorsMapArray[i]->shdCheckSector = false;
-					foundLines.push_back(vectorsMapArray[i]);
+					foundLines.push_back(std::move(vectorsMapArray[i]));
 
 					vectorsMapArray.erase(vectorsMapArray.begin() + i);
 					i -= 1;
@@ -873,10 +868,10 @@ int Pseudo3D::checkAmountOfPaths(std::vector<std::vector<std::shared_ptr<LineMap
 				{
 					currPathId += 1;
 
-					std::vector<std::shared_ptr<LineMap>> newPath;
-					newPath.push_back(foundLines[i]);
+					std::vector<LineMap*> newPath;
+					newPath.push_back(std::move(foundLines[i]));
 
-					sectorPaths.push_back(newPath);
+					sectorPaths.push_back(std::move(newPath));
 
 					tempNotCheckRepeat.push_back(currPathId);
 					createdPaths.push_back(currPathId);
@@ -895,10 +890,10 @@ int Pseudo3D::checkAmountOfPaths(std::vector<std::vector<std::shared_ptr<LineMap
 
 					currPathId += 1;
 
-					std::vector<std::shared_ptr<LineMap>> newPath;
-					newPath.push_back(foundLines[0]);
+					std::vector<LineMap*> newPath;
+					newPath.push_back(std::move(foundLines[0]));
 
-					sectorPaths.push_back(newPath);
+					sectorPaths.push_back(std::move(newPath));
 
 					tempNotCheckRepeat.push_back(currPathId);
 					createdPaths.push_back(currPathId);
@@ -977,7 +972,7 @@ bool Pseudo3D::shouldCheck(int pathId, std::vector<int>& notCheckPaths)
 	return true;
 }
 
-void Pseudo3D::createSector(int currentPathId, int foundPathId, std::vector<int>& notCheckPaths, std::vector<std::vector<std::shared_ptr<LineMap>>>& sectorPaths, std::vector<std::vector<int>>& sectorsArray)
+void Pseudo3D::createSector(int currentPathId, int foundPathId, std::vector<int>& notCheckPaths, std::vector<std::vector<LineMap*>>& sectorPaths, std::vector<std::vector<int>>& sectorsArray)
 {
 	//добавляем найденный путь в пути которые НЕ будем проверять 
 	notCheckPaths.push_back(foundPathId);
@@ -986,8 +981,8 @@ void Pseudo3D::createSector(int currentPathId, int foundPathId, std::vector<int>
 	std::vector<int> newSector;
 
 	//получаем по ссылке путь чей id совпадает с найденным
-	std::vector<std::shared_ptr<LineMap>>& foundPathArr = sectorPaths[foundPathId];
-	std::vector<std::shared_ptr<LineMap>>& currPathArr = sectorPaths[currentPathId];
+	std::vector<LineMap*>& foundPathArr = sectorPaths[foundPathId];
+	std::vector<LineMap*>& currPathArr = sectorPaths[currentPathId];
 
 	LineMap& currPath = *currPathArr[currPathArr.size() - 1];
 	LineMap& foundPath = *foundPathArr[0];
@@ -1019,11 +1014,11 @@ void Pseudo3D::createSector(int currentPathId, int foundPathId, std::vector<int>
 					std::vector<int>& sectorLine_Paths = sectorLine[i];
 					std::vector<int> foundVectors;
 
-					std::vector<std::shared_ptr<LineMap>>& tempPath = sectorPaths[sectorLine_Paths[sectorLine_Paths.size() - 1]];
+					std::vector<LineMap*>& tempPath = sectorPaths[sectorLine_Paths[sectorLine_Paths.size() - 1]];
 
 					for (int j = 0; j < sectorPaths.size(); j++)
 					{
-						std::vector<std::shared_ptr<LineMap>>& sectorPath = sectorPaths[j];
+						std::vector<LineMap*>& sectorPath = sectorPaths[j];
 						LineMap& tempPathLine = *tempPath[0];
 						LineMap& endLine = *sectorPath[sectorPath.size() - 1];
 
@@ -1148,11 +1143,11 @@ void Pseudo3D::createSector(int currentPathId, int foundPathId, std::vector<int>
 
 					std::vector<int> foundVectors;
 
-					std::vector<std::shared_ptr<LineMap>>& tempPath = sectorPaths[sectorLine_1_Paths[sectorLine_1_Paths.size() - 1]];
+					std::vector<LineMap*>& tempPath = sectorPaths[sectorLine_1_Paths[sectorLine_1_Paths.size() - 1]];
 
 					for (int j = 0; j < sectorPaths.size(); j++)
 					{
-						std::vector<std::shared_ptr<LineMap>>& sectorPath = sectorPaths[j];
+						std::vector<LineMap*>& sectorPath = sectorPaths[j];
 
 						LineMap& tempStartLine = *tempPath[0];
 						LineMap& tempEndLine = *sectorPath[sectorPath.size() - 1];
@@ -1205,11 +1200,11 @@ void Pseudo3D::createSector(int currentPathId, int foundPathId, std::vector<int>
 					std::vector<int>& sectorLine_2_Paths = sectorLine_2[i];
 					std::vector<int> foundVectors;
 
-					std::vector<std::shared_ptr<LineMap>>& tempPath = sectorPaths[sectorLine_2_Paths[sectorLine_2_Paths.size() - 1]];
+					std::vector<LineMap*>& tempPath = sectorPaths[sectorLine_2_Paths[sectorLine_2_Paths.size() - 1]];
 
 					for (int j = 0; j < sectorPaths.size(); j++)
 					{
-						std::vector<std::shared_ptr<LineMap>>& sectorPath = sectorPaths[j];
+						std::vector<LineMap*>& sectorPath = sectorPaths[j];
 
 						LineMap& tempStartLine = *tempPath[0];
 						LineMap& tempEndLine = *sectorPath[sectorPath.size() - 1];
@@ -1313,7 +1308,7 @@ void Pseudo3D::createSector(int currentPathId, int foundPathId, std::vector<int>
 	}
 }
 
-int Pseudo3D::partitionCosign(std::vector<std::shared_ptr<LineMap>>& arr, int low, int high, LineMap& currentLine)
+int Pseudo3D::partitionCosign(std::vector<LineMap*>& arr, int low, int high, LineMap& currentLine)
 {
 	//устанавливаем опорный элемент
 	LineMap& tempHigh = *arr[high];
@@ -1335,7 +1330,7 @@ int Pseudo3D::partitionCosign(std::vector<std::shared_ptr<LineMap>>& arr, int lo
 	return (i + 1);
 }
 
-void Pseudo3D::sortCosign(std::vector<std::shared_ptr<LineMap>>& arr, int low, int high, LineMap& line)
+void Pseudo3D::sortCosign(std::vector<LineMap*>& arr, int low, int high, LineMap& line)
 {
 	if (low < high) {
 		//pivot - получаем индекс опорного элемента
@@ -1368,7 +1363,7 @@ double Pseudo3D::countCosign(LineMap& lineFirst, LineMap& lineSecond)
 	return cosign;
 }
 
-void Pseudo3D::sortPaths(std::vector<std::vector<int>>& pathsArr, int low, int high, int aimPath, std::vector<std::vector<std::shared_ptr<LineMap>>>& sectorPaths)
+void Pseudo3D::sortPaths(std::vector<std::vector<int>>& pathsArr, int low, int high, int aimPath, std::vector<std::vector<LineMap*>>& sectorPaths)
 {
 	if (low < high) {
 		//pivot - получаем индекс опорного элемента
@@ -1382,7 +1377,7 @@ void Pseudo3D::sortPaths(std::vector<std::vector<int>>& pathsArr, int low, int h
 	}
 }
 
-int Pseudo3D::partitionPaths(std::vector<std::vector<int>>& pathsArr, int low, int high, int aimPath, std::vector<std::vector<std::shared_ptr<LineMap>>>& sectorPaths)
+int Pseudo3D::partitionPaths(std::vector<std::vector<int>>& pathsArr, int low, int high, int aimPath, std::vector<std::vector<LineMap*>>& sectorPaths)
 {
 	std::vector<int>& tempStringArr = pathsArr[high];
 
@@ -1403,10 +1398,10 @@ int Pseudo3D::partitionPaths(std::vector<std::vector<int>>& pathsArr, int low, i
 	return i + 1;
 }
 
-double Pseudo3D::countPathDist(int pathStart, int pathEnd, std::vector<std::vector<std::shared_ptr<LineMap>>>& sectorPaths)
+double Pseudo3D::countPathDist(int pathStart, int pathEnd, std::vector<std::vector<LineMap*>>& sectorPaths)
 {
-	std::vector<std::shared_ptr<LineMap>>& startLinesArr = sectorPaths[pathStart];
-	std::vector<std::shared_ptr<LineMap>>& endLinesArr = sectorPaths[pathEnd];
+	std::vector<LineMap*>& startLinesArr = sectorPaths[pathStart];
+	std::vector<LineMap*>& endLinesArr = sectorPaths[pathEnd];
 
 	LineMap& startLineEnd = *startLinesArr[startLinesArr.size() - 1];
 	LineMap& startLineStart = *endLinesArr[0];
@@ -1426,7 +1421,7 @@ int Pseudo3D::getCellIndex(double coord, double cellSize) {
 	return static_cast<int>(std::floor((coord / cellSize) + cell_epsilon));
 }
 
-void Pseudo3D::addNewLine(double startPosX, double startPosY, double endPosX, double endPosY, double dirX, double dirY, std::shared_ptr<SectorMap> &ptr, std::shared_ptr<LineMap>& vectorPtr)
+void Pseudo3D::addNewLine(double startPosX, double startPosY, double endPosX, double endPosY, double dirX, double dirY, SectorMap*& ptr, LineMap*& vectorPtr)
 {
 	double midX = (startPosX + endPosX) / 2.0;
 	double midY = (startPosY + endPosY) / 2.0;
@@ -1434,16 +1429,15 @@ void Pseudo3D::addNewLine(double startPosX, double startPosY, double endPosX, do
 	int mapX = int((midX / squareWidth) - zoomEpsW);
 	int mapY = int((midY / squareHeight) - zoomEpsH);
 
-	auto sptr = std::make_shared<LineMap>(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
-	std::weak_ptr<LineMap> wptr = sptr;
+	LineMap* line_ptr = new LineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
 
-	sptr->sectorObj = ptr;
-	sptr->linePtr = vectorPtr;
+	line_ptr->sectorObj = ptr;
+	line_ptr->linePtr = vectorPtr;
 
-	vectorPtr->vectorToLines.push_back(sptr);
+	vectorPtr->vectorToLines.push_back(line_ptr);
 
 	squareMapArray[mapY][mapX].isEmpty = false;
-	squareMapArray[mapY][mapX].linesList.push_back(wptr);
+	squareMapArray[mapY][mapX].linesList.push_back(line_ptr);
 }
 
 void Pseudo3D::getArrForRepeat(std::vector<std::vector<std::shared_ptr<LineMap>>>& sectors, std::vector<std::shared_ptr<LineMap>>& repeatingVectors)
@@ -1488,9 +1482,9 @@ void Pseudo3D::getArrForRepeat(std::vector<std::vector<std::shared_ptr<LineMap>>
 }
 
 void Pseudo3D::checkForRepeat(
-	std::vector<std::shared_ptr<LineMap>>& repeatingVectors,
+	std::vector<LineMap*>& repeatingVectors,
 	LineMap line,
-	std::vector<std::shared_ptr<LineMap>>& sectorPaths, std::shared_ptr<SectorMap> sectorPtr)
+	std::vector<LineMap*>& sectorPaths, SectorMap* sectorPtr)
 {
 	for (int i = 0; i < repeatingVectors.size(); i++)
 	{

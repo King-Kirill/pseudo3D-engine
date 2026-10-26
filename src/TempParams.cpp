@@ -5,10 +5,10 @@
 GridDots** gridDotsArray = NULL;
 SquareMap** squareMapArray = NULL;
 
-std::vector<std::shared_ptr<SectorMap>> sectorsArray;
+std::vector<SectorMap*> sectorsArray;
 
-std::vector<std::shared_ptr<LineMap>> vectorsMapArray;
-std::vector<std::shared_ptr<LineMap>> previousVectorsMapArray;
+std::vector<LineMap*> vectorsMapArray;
+std::vector<LineMap*> previousVectorsMapArray;
 
 std::vector<GameCharacter*> characters;
 
@@ -185,6 +185,9 @@ void clearSquareMapArray()
     {
         for (int i = 0; i < squares_amount_y - 1; ++i) {
             if (squareMapArray[i] != nullptr) {
+				// очистка векторов внутри каждого элемента массива
+				squareMapArray[i]->linesList.clear();
+                
                 delete[] squareMapArray[i];
                 squareMapArray[i] = nullptr; // на всякий случай
             }
@@ -195,26 +198,6 @@ void clearSquareMapArray()
     else
     {
         std::cout << "ERROR: not initialized array" << std::endl;
-    }
-}
-
-void clearExposedSquareMapArray()
-{
-    for (int i = 0; i < squares_amount_y - 1; i++)
-    {
-        for (int j = 0; j < squares_amount_x - 1; j++)
-        {
-            auto& vec = squareMapArray[i][j].linesList;
-
-            vec.erase(
-                std::remove_if(vec.begin(), vec.end(),
-                    [](const std::weak_ptr<LineMap>& w)
-                    {
-                        return w.expired();
-                    }),
-                vec.end()
-            );
-        }
     }
 }
 
@@ -229,7 +212,6 @@ void initSquareMapArray()
     }
     else
     {
-        // убирай динамическую память !!! Тут статики за глаза !!!
         squareMapArray = new SquareMap * [height - 1];
 
         for (int i = 0; i < height - 1; i++)

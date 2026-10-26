@@ -322,7 +322,7 @@ void MapDraw::drawGame(std::string selected_engine_window)
                     {
                         if (draw_step_counter >= draw_step)
                         {
-                            auto temp_line_ptr = player->newCamera.cameraDots[i][j].line_ptr.lock();
+                            auto temp_line_ptr = player->newCamera.cameraDots[i][j].line_ptr;
 
                             int drawStart = ( - player->newCamera.cameraDots[i][j].wallHeight * 0.5) / 2 + additional_window_h / 2;
                             if (drawStart < 0)drawStart = 0;
@@ -336,7 +336,7 @@ void MapDraw::drawGame(std::string selected_engine_window)
                     }
 					else if (selected_engine_window == "game")
                     {
-                        auto temp_line_ptr = player->newCamera.cameraDots[i][j].line_ptr.lock();
+                        auto temp_line_ptr = player->newCamera.cameraDots[i][j].line_ptr;
 
                         int drawStart = -player->newCamera.cameraDots[i][j].wallHeight / 2 + img_h / 2;
                         if (drawStart < 0)drawStart = 0;

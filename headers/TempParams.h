@@ -16,13 +16,13 @@ extern GridDots** gridDotsArray;
 extern SquareMap** squareMapArray;
 
 //массив содержащий массивы сообщающихся линий (секторов)
-extern std::vector<std::shared_ptr<SectorMap>> sectorsArray;
+extern std::vector<SectorMap*> sectorsArray;
 
 //массив для хранения обычных векторов (пока не расторизованных)
-extern std::vector<std::shared_ptr<LineMap>> vectorsMapArray;
+extern std::vector<LineMap*> vectorsMapArray;
 
 //предыдущий массив для хранения обычных векторов (пока не расторизованных)
-extern std::vector<std::shared_ptr<LineMap>> previousVectorsMapArray;
+extern std::vector<LineMap*> previousVectorsMapArray;
 
 //массив персонажей игры
 extern std::vector<GameCharacter*> characters;
@@ -190,7 +190,6 @@ extern double mini_map_epsilon_y;
 //кастомные методы очистки памяти массивов указателей
 void clearCharacters();
 void clearSquareMapArray();
-void clearExposedSquareMapArray();
 void initSquareMapArray();
 void clearGridDotsArray();
 

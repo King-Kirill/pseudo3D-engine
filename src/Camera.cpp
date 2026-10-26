@@ -29,6 +29,12 @@ void Camera::DDArayCasting(double dirX, double dirY, double planeX, double plane
 			);
 		});
 
+		/*DDAraycastingThread(
+			dirX_thread, dirY_thread, planeX_thread, planeY_thread,
+			player_x_thread, player_y_thread,
+			player_map_x_thread, player_map_y_thread,
+			max_dist_thread
+		);*/
 
 		for (int x = 0; x < int(img_w / 2); x++)
 		{
@@ -67,7 +73,7 @@ void Camera::DDArayCasting(double dirX, double dirY, double planeX, double plane
 				{
 					perpWallDist = (sideDistX - deltaDistX);
 					if (perpWallDist > max_dist)
-					{ 
+					{
 						perpWallDist = max_dist;
 					}
 				}
@@ -260,8 +266,7 @@ void Camera::DDArayCounting(double& rayDirX, double& rayDirY, double& sideDistX,
 				dotY = start_y + (tempPerpWallDist * rayDirY * squareHeight);
 			}
 
-			// тоже тяжелая операция, надо устранить
-			std::weak_ptr<LineMap> line_hit_ptr;
+			LineMap* line_hit_ptr = nullptr;
 
 			CameraDot obj = getHitDist(dotX, dotY, rayDirX, rayDirY, tempPerpWallDist, max_dist, dot_start_x, dot_start_y, dot_map_x, dot_map_y, dirX, dirY, line_hit_ptr);
 			
@@ -299,9 +304,9 @@ void Camera::DDArayCounting(double& rayDirX, double& rayDirY, double& sideDistX,
 						cameraDots_local[ray_num].emplace_back(dotX, dotY, wallHeight, true);
 
 						// получение ссылки в точку на вектор стены
-						if (auto sp = line_hit_ptr.lock())
+						if (line_hit_ptr)
 						{
-							cameraDots_local[ray_num][cameraDots_local[ray_num].size() - 1].line_ptr = sp;
+							cameraDots_local[ray_num][cameraDots_local[ray_num].size() - 1].line_ptr = line_hit_ptr;
 						}
 					}
 					else
@@ -310,9 +315,9 @@ void Camera::DDArayCounting(double& rayDirX, double& rayDirY, double& sideDistX,
 						temp_arr.emplace_back(dotX, dotY, wallHeight, true);
 
 						// получение ссылки в точку на вектор стены
-						if (auto sp = line_hit_ptr.lock())
+						if (line_hit_ptr)
 						{
-							temp_arr[temp_arr.size() - 1].line_ptr = sp;
+							temp_arr[temp_arr.size() - 1].line_ptr = line_hit_ptr;
 						}
 
 						cameraDots_local.push_back(temp_arr);
@@ -443,6 +448,48 @@ void Camera::DDAecho(double dirX, double dirY, double player_x, double player_y,
 	}
 }
 
+void Camera::reserveMemmory()
+{
+	cameraDots.resize(img_w);
+
+	cameraDotsLeft.resize(img_w / 2);
+	cameraDotsRight.resize(img_w / 2);
+
+	for (int i = 0; i < img_w; i++)
+	{
+		cameraDots[i].reserve(max_camera_dots_reserved);
+
+		if (i >= (img_w / 2))
+		{
+			cameraDotsLeft[i - (img_w / 2)].reserve(max_camera_dots_reserved);
+		}
+		else
+		{
+			cameraDotsRight[i].reserve(max_camera_dots_reserved);
+		}
+	}
+}
+
+void Camera::clearReservedMemmory()
+{
+	for (int i = 0; i < cameraDots.size(); i++)
+	{
+		cameraDots[i].clear();
+		cameraDots[i].shrink_to_fit();
+
+		if (i >= (cameraDots.size() / 2))
+		{
+			cameraDotsLeft[i - (cameraDots.size() / 2)].clear();
+			cameraDotsLeft[i - (cameraDots.size() / 2)].shrink_to_fit();
+		}
+		else
+		{
+			cameraDotsRight[i].clear();
+			cameraDotsRight[i].shrink_to_fit();
+		}
+	}
+}
+
 void Camera::clearCameraDots()
 { 
 	if (cameraDots.size() != 0) 
@@ -455,7 +502,7 @@ void Camera::clearCameraDots()
 	} 
 }
 
-CameraDot Camera::getHitDist(double dotX, double dotY, double rayDirX, double rayDirY, double perpWallDist, double& max_dist, double player_x, double player_y, int mapX, int mapY, double dirX, double dirY, std::weak_ptr<LineMap>& line_hit_ptr)
+CameraDot Camera::getHitDist(double dotX, double dotY, double rayDirX, double rayDirY, double perpWallDist, double& max_dist, double player_x, double player_y, int mapX, int mapY, double dirX, double dirY, LineMap*& line_hit_ptr)
 {
 	double hitX = -1;
 	double hitY = -1;
@@ -472,8 +519,7 @@ CameraDot Camera::getHitDist(double dotX, double dotY, double rayDirX, double ra
 	{
 		for (int i = 0; i < squareMapArray[mapY][mapX].linesList.size(); i++)
 		{
-			// придумать как избежать лишнего копирования shared_ptr, чтобы не терять время
-			auto linePtr = squareMapArray[mapY][mapX].linesList[i].lock();
+			auto linePtr = squareMapArray[mapY][mapX].linesList[i];
 
 			if (linePtr != nullptr)
 			{

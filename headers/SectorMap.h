@@ -15,8 +15,8 @@ public:
 	SectorMap();
 	~SectorMap();
 
-	std::vector<std::weak_ptr<LineMap>> sectorLines;
-	SectorMap(std::vector<std::shared_ptr<LineMap>>& newVectorLines);
+	std::vector<LineMap*> sectorLines;
+	SectorMap(std::vector<LineMap*>& newVectorLines);
 };
 
 #endif /* SectorMap_hpp */

@@ -662,27 +662,25 @@ void Game::handleEvents()
 				{ 
 					for (int k = 0; k < previousVectorsMapArray[i]->vectorToLines.size(); k++)
 					{
-						previousVectorsMapArray[i]->vectorToLines[k].reset();
+						// удаляем элемент физически, чтобы освободить память
+						delete previousVectorsMapArray[i]->vectorToLines[k];
 					}
 					previousVectorsMapArray[i]->vectorToLines.clear();
 
-					previousVectorsMapArray[i].reset();
 					previousVectorsMapArray.erase(previousVectorsMapArray.begin() + i);
 					i -= 1;
 				}
 
+				// чистим массивы пустых указателей
 				for (int i = 0; i < vectorsMapArray.size(); i++)
 				{
-					if (vectorsMapArray[i]->vectorToLines.size() > 0)
-					{
-						for (int k = 0; k < vectorsMapArray[i]->vectorToLines.size(); k++)
-						{
-							vectorsMapArray[i]->vectorToLines[k].reset();
-						}
-						vectorsMapArray[i]->vectorToLines.clear();
+					vectorsMapArray[i]->vectorToLines.clear();
+				}
 
-						i -= 1;
-					}
+				// полностью очищаем массив секторов и высвобождаем память
+				for (int i = 0; i < sectorsArray.size(); i++)
+				{
+					delete sectorsArray[i];
 				}
 
 				sectorsArray.clear();
@@ -690,7 +688,7 @@ void Game::handleEvents()
 				clearSquareMapArray();
 				initSquareMapArray();
 
-				std::vector<std::vector<std::shared_ptr<LineMap>>> sectors;
+				std::vector<std::vector<LineMap*>> sectors;
 
 				mainScene->performBSP(sectors);
 				mainScene->rastorization(sectors, sectorsArray);
@@ -737,11 +735,12 @@ void Game::handleEvents()
 				{
 					for (int k = 0; k < vectorsMapArray[vectorIndexes[i]]->vectorToLines.size(); k++)
 					{
-						vectorsMapArray[vectorIndexes[i]]->vectorToLines[k].reset();
+						 delete vectorsMapArray[vectorIndexes[i]]->vectorToLines[k];
 					}
 					vectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
+					previousVectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
 
-					vectorsMapArray[vectorIndexes[i]].reset();
+					delete vectorsMapArray[vectorIndexes[i]];
 					vectorsMapArray.erase(vectorsMapArray.begin() + vectorIndexes[i]);
 				}
 
@@ -767,9 +766,10 @@ void Game::handleEvents()
 					
 					for (int k = 0; k < vectorsMapArray[vectorIndexes[i]]->vectorToLines.size(); k++)
 					{
-						vectorsMapArray[vectorIndexes[i]]->vectorToLines[k].reset();
+						delete vectorsMapArray[vectorIndexes[i]]->vectorToLines[k];
 					}
 					vectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
+					previousVectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
 
 					mainScene->rastorLine(vectorsMapArray[vectorIndexes[i]], sectorPtr);
 				}
@@ -788,9 +788,10 @@ void Game::handleEvents()
 
 					for (int k = 0; k < vectorsMapArray[vectorIndexes[i]]->vectorToLines.size(); k++)
 					{
-						vectorsMapArray[vectorIndexes[i]]->vectorToLines[k].reset();
+						delete vectorsMapArray[vectorIndexes[i]]->vectorToLines[k];
 					}
 					vectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
+					previousVectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
 
 					mainScene->rastorLine(vectorsMapArray[vectorIndexes[i]], sectorPtr);
 				}
@@ -809,9 +810,10 @@ void Game::handleEvents()
 
 					for (int k = 0; k < vectorsMapArray[vectorIndexes[i]]->vectorToLines.size(); k++)
 					{
-						vectorsMapArray[vectorIndexes[i]]->vectorToLines[k].reset();
+						delete vectorsMapArray[vectorIndexes[i]]->vectorToLines[k];
 					}
 					vectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
+					previousVectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
 
 					mainScene->rastorLine(vectorsMapArray[vectorIndexes[i]], sectorPtr);
 				}
@@ -830,9 +832,10 @@ void Game::handleEvents()
 
 					for (int k = 0; k < vectorsMapArray[vectorIndexes[i]]->vectorToLines.size(); k++)
 					{
-						vectorsMapArray[vectorIndexes[i]]->vectorToLines[k].reset();
+						delete vectorsMapArray[vectorIndexes[i]]->vectorToLines[k];
 					}
 					vectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
+					previousVectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
 
 					mainScene->rastorLine(vectorsMapArray[vectorIndexes[i]], sectorPtr);
 				}
@@ -1362,11 +1365,11 @@ void Game::zooming(bool flag, int mouseX, int mouseY)
 		{
 			if (squareMapArray[i][j].isEmpty == false)
 			{
-				std::vector<std::weak_ptr<LineMap>>& linesList = squareMapArray[i][j].linesList;
+				std::vector<LineMap*>& linesList = squareMapArray[i][j].linesList;
 
 				for (int k = 0; k < linesList.size(); k++)
 				{
-					auto linePtr = squareMapArray[i][j].linesList[k].lock();
+					auto linePtr = squareMapArray[i][j].linesList[k];
 
 					if (linePtr != nullptr)
 					{
@@ -1584,8 +1587,7 @@ void Game::addNewLine()
 		}
 
 		LineMap* newLine = new LineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
-		std::shared_ptr<LineMap> ptr(newLine);
-		vectorsMapArray.push_back(ptr);
+		vectorsMapArray.push_back(newLine);
 	}
 	else if (startPosY == endPosY)
 	{
@@ -1601,8 +1603,7 @@ void Game::addNewLine()
 		}
 
 		LineMap* newLine = new LineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
-		std::shared_ptr<LineMap> ptr(newLine);
-		vectorsMapArray.push_back(ptr);
+		vectorsMapArray.push_back(newLine);
 	}
 	else
 	{
@@ -1645,8 +1646,7 @@ void Game::addNewLine()
 		}
 
 		LineMap* newLine = new LineMap(startPosX, startPosY, endPosX, endPosY, dirX, dirY);
-		std::shared_ptr<LineMap> ptr(newLine);
-		vectorsMapArray.push_back(ptr);
+		vectorsMapArray.push_back(newLine);
 		std::cout << "size: " << vectorsMapArray.size() << std::endl;
 	}
 }
@@ -1784,11 +1784,11 @@ void Game::getNewMap_coroutine(double currentX, double currentY, double& startPo
 		{
 			if (squareMapArray[i][j].isEmpty == false)
 			{
-				std::vector<std::weak_ptr<LineMap>>& linesList = squareMapArray[i][j].linesList;
+				std::vector<LineMap*>& linesList = squareMapArray[i][j].linesList;
 
 				for (int k = 0; k < linesList.size(); k++)
 				{
-					auto linePtr = linesList[k].lock();
+					auto linePtr = linesList[k];
 
 					if(linePtr != nullptr)
 					{ 
@@ -1979,11 +1979,11 @@ void Game::normalizeMap()
 			{
 				if (squareMapArray[i][j].isEmpty == false)
 				{
-					std::vector<std::weak_ptr<LineMap>>& linesList = squareMapArray[i][j].linesList;
+					std::vector<LineMap*>& linesList = squareMapArray[i][j].linesList;
 
 					for (int k = 0; k < linesList.size(); k++)
 					{
-						auto linePtr = squareMapArray[i][j].linesList[k].lock();
+						auto linePtr = squareMapArray[i][j].linesList[k];
 
 						if (linePtr != nullptr)
 						{

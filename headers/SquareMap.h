@@ -12,7 +12,7 @@ class SquareMap
 {
 public:
 	bool isEmpty;
-	std::vector<std::weak_ptr<LineMap>> linesList;
+	std::vector<LineMap*> linesList;
 	SquareMap();
 };
 
