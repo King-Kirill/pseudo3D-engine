@@ -29,13 +29,6 @@ void Camera::DDArayCasting(double dirX, double dirY, double planeX, double plane
 			);
 		});
 
-		/*DDAraycastingThread(
-			dirX_thread, dirY_thread, planeX_thread, planeY_thread,
-			player_x_thread, player_y_thread,
-			player_map_x_thread, player_map_y_thread,
-			max_dist_thread
-		);*/
-
 		for (int x = 0; x < int(img_w / 2); x++)
 		{
 			double cameraX = 2 * x / (double)img_w - 1;

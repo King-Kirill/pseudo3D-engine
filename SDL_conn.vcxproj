@@ -155,6 +155,7 @@
     <ClCompile Include="src\SquareMap.cpp" />
     <ClCompile Include="src\TempParams.cpp" />
     <ClCompile Include="src\VectorToLines.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Camera.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="src\GridDots.cpp" />
     <ClCompile Include="src\LineMap.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClInclude Include="ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
