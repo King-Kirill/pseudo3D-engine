@@ -8,6 +8,10 @@
 #include "LineMap.h"
 #include "GameCharacter.h"
 #include "SectorMap.h"
+#include "../ThreadPool.h"
+
+// пул потоков для многопоточной отрисовки
+extern ThreadPool* threadPool;
 
 //массив точек для отрисовки карты
 extern GridDots** gridDotsArray;

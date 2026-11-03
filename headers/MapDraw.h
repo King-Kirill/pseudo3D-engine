@@ -7,6 +7,7 @@
 #include "SDL2_gfxPrimitives.h"
 #include "GameCharacter.h"
 #include <string>
+#include "LineMap.h"
 
 class MapDraw
 {

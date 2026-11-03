@@ -1,6 +1,6 @@
 #include "ThreadPool.h"
 
-ThreadPool::ThreadPool(size_t numThreads)
+ThreadPool::ThreadPool(int numThreads)
 {
 	for (int i = 0; i < numThreads; ++i)
 	{

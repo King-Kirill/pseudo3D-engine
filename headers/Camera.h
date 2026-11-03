@@ -18,11 +18,11 @@ public:
 	double echo_posY;
 
 	double rotation_sum = 0.0;
-	// массив основного потока
+	// массив точек для левой половины камеры
 	std::vector<std::vector<CameraDot>> cameraDotsLeft;
-	// массив дочернего потока
+	// массив точек для правой половины камеры
 	std::vector<std::vector<CameraDot>> cameraDotsRight;
-	// общий массив точек (основной)
+	// массив точек для всей камеры
 	std::vector<std::vector<CameraDot>> cameraDots;
 
 	Camera();
@@ -31,8 +31,8 @@ public:
 	void DDAraycastingThread(double dirX, double dirY, double planeX, double planeY, double player_x, double player_y, int player_map_x, int player_map_y, double max_dist);
 	void DDArayCounting(double& rayDirX, double& rayDirY, double& sideDistX, double& sideDistY, double& deltaDistX, double& deltaDistY, int& side, int& hit, double& dot_start_x, double& dot_start_y, int& dot_map_x, int& dot_map_y, double& max_dist, double& dirX, double& dirY, int ray_num, std::vector<std::vector<CameraDot>>& cameraDots_local, double& allPerpWallDist, bool echo = false);
 	void DDAecho(double dirX, double dirY, double player_x, double player_y, double max_echo_dist, double &echo_rotation, double echo_fov, int player_map_x, int player_map_y);
-	void reserveMemmory();
-	void clearReservedMemmory();
+	void reserveMemory();
+	void clearReservedMemory();
 	void clearCameraDots();
 	CameraDot getHitDist(double dotX, double dotY, double rayDirX, double rayDirY, double peprWallDist, double &max_dist, double player_x, double player_y, int mapX, int mapY, double dirX, double dirY, LineMap*& line_hit_ptr);
 };

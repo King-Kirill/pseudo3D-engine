@@ -1,4 +1,4 @@
-#include "../headers/MapDraw.h"
+п»ї#include "../headers/MapDraw.h"
 #include "../headers/SquareMap.h"
 #include "../headers/ConstParams.h"
 #include "../headers/TempParams.h"
@@ -57,7 +57,7 @@ void MapDraw::drawMap()
     drawMapEdges();
 }
 
-// ортисовка мини карты
+// РѕСЂС‚РёСЃРѕРІРєР° РјРёРЅРё РєР°СЂС‚С‹
 void MapDraw::drawMapSmall()
 {
     if (gridDotsArray != nullptr)
@@ -106,7 +106,7 @@ void MapDraw::drawMapEdges()
     drawLine((0 + zoomEpsW) * squareWidth, (int(amountOfDotsHeight) + zoomEpsH) * squareHeight, (int(amountOfDotsWidth) + zoomEpsW) * squareWidth, (int(amountOfDotsHeight) + zoomEpsH) * squareHeight, 255, 255, 255);
 }
 
-// для миникарты
+// РґР»СЏ РјРёРЅРёРєР°СЂС‚С‹
 void MapDraw::drawMapEdgesSmall()
 {
     drawLine((img_w - dev_zone_w - additional_window_w), 0, img_w - dev_zone_w, 0, 255, 255, 255);
@@ -304,13 +304,11 @@ void MapDraw::drawCharacters()
 
 void MapDraw::drawGame(std::string selected_engine_window)
 {
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
     if (player != nullptr)
     {
-        // отрисовываем только каждую n-ную линию в соответсвии с разрешением миникарты
-		int draw_step_counter = 0;
-		int x_offset = 0;
+		// РґРѕР±Р°РІР»СЏРµРј offst РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё РІ РјРёРЅРёРєР°СЂС‚Рµ, С‡С‚РѕР±С‹ РЅРµ Р±С‹Р»Рѕ РЅР°Р»РѕР¶РµРЅРёСЏ РЅР° РіСЂР°РЅРёС†С‹ РѕРєРЅР°
+        int draw_step_counter = 0;
+        int x_offset = 0;
 
         for (int i = 0; i < player->newCamera.cameraDots.size(); i++)
         {
@@ -322,31 +320,21 @@ void MapDraw::drawGame(std::string selected_engine_window)
                     {
                         if (draw_step_counter >= draw_step)
                         {
-                            auto temp_line_ptr = player->newCamera.cameraDots[i][j].line_ptr;
+							auto& camera_dot_ptr = player->newCamera.cameraDots[i][j];
 
-                            int drawStart = ( - player->newCamera.cameraDots[i][j].wallHeight * 0.5) / 2 + additional_window_h / 2;
-                            if (drawStart < 0)drawStart = 0;
-                            int drawEnd = (player->newCamera.cameraDots[i][j].wallHeight * 0.5) / 2 + additional_window_h / 2;
-                            if (drawEnd >= additional_window_h)drawEnd = additional_window_h - 1;
+                            int start_x = (img_w - dev_zone_w - x_offset);
 
-                            int start_x = ((img_w - dev_zone_w - additional_window_w) + x_offset);
-
-                            drawLine(start_x, drawStart, start_x, drawEnd, temp_line_ptr->lineColorR, temp_line_ptr->lineColorG, temp_line_ptr->lineColorB);
+                            drawLine(start_x, camera_dot_ptr.drawStart, start_x, camera_dot_ptr.drawEnd, camera_dot_ptr.line_ptr->lineColorR, camera_dot_ptr.line_ptr->lineColorG, camera_dot_ptr.line_ptr->lineColorB);
                         }
                     }
-					else if (selected_engine_window == "game")
+                    else if (selected_engine_window == "game")
                     {
-                        auto temp_line_ptr = player->newCamera.cameraDots[i][j].line_ptr;
+                        auto& camera_dot_ptr = player->newCamera.cameraDots[i][j];
 
-                        int drawStart = -player->newCamera.cameraDots[i][j].wallHeight / 2 + img_h / 2;
-                        if (drawStart < 0)drawStart = 0;
-                        int drawEnd = player->newCamera.cameraDots[i][j].wallHeight / 2 + img_h / 2;
-                        if (drawEnd >= img_h)drawEnd = img_h - 1;
+                        int start_x = player->newCamera.cameraDots.size() - i;
 
-                        drawLine(player->newCamera.cameraDots.size() - i, drawStart, player->newCamera.cameraDots.size() - i, drawEnd, temp_line_ptr->lineColorR, temp_line_ptr->lineColorG, temp_line_ptr->lineColorB);
+                        drawLine(start_x, camera_dot_ptr.drawStart, start_x, camera_dot_ptr.drawEnd, camera_dot_ptr.line_ptr->lineColorR, camera_dot_ptr.line_ptr->lineColorG, camera_dot_ptr.line_ptr->lineColorB);
                     }
-
-                    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
                 }
             }
 
@@ -366,7 +354,7 @@ void MapDraw::drawGame(std::string selected_engine_window)
     }
 }
 
-// отдельный метод для определения изменения позиции игрока на мини карте
+// РѕС‚РґРµР»СЊРЅС‹Р№ РјРµС‚РѕРґ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ РёР·РјРµРЅРµРЅРёСЏ РїРѕР·РёС†РёРё РёРіСЂРѕРєР° РЅР° РјРёРЅРё РєР°СЂС‚Рµ
 void MapDraw::countMiniMapCenterDiffer()
 {
     if (player != nullptr)

@@ -12,8 +12,12 @@ public:
 
 	bool hit = false;
 
+	// позиции начала отрисовки
+	int drawStart = 0.0;
+	int drawEnd = 0.0;
+
 	LineMap* line_ptr;
 
 	CameraDot();
-	CameraDot(double posX, double posY, double wallHeight, bool hit);
+	CameraDot(double posX, double posY, double wallHeight, bool hit, int drawStart = 0, int drawEnd = 0);
 };

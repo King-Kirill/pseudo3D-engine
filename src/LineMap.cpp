@@ -13,9 +13,9 @@ LineMap::LineMap(double startPosX, double startPosY, double endPosX, double endP
 	this->dirX = dirX;
 	this->dirY = dirY;
 
- 	lineColorR = currLineColorR;
-	lineColorG = currLineColorG;
-	lineColorB = currLineColorB;
+	this->lineColorR = currLineColorR;
+	this->lineColorG = currLineColorG;
+	this->lineColorB = currLineColorB;
 }
 
 LineMap::LineMap()
@@ -29,9 +29,9 @@ LineMap::LineMap()
 	this->dirX = 0;
 	this->dirY = 0;
 
-	lineColorR = currLineColorR;
-	lineColorG = currLineColorG;
-	lineColorB = currLineColorB;
+	this->lineColorR = currLineColorR;
+	this->lineColorG = currLineColorG;
+	this->lineColorB = currLineColorB;
 }
 
 bool LineMap::operator==(const LineMap& other) const

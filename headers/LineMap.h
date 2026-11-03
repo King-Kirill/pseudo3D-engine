@@ -45,7 +45,6 @@ public:
 	//аналогично два массива - один для внутренней стороны стены, другой для внешней
 	//если pDirX и pDirY == 0, то пользуется и заполняется первый массив
 
-
 	LineMap(double startPosX, double starPosY, double endPosX, double endPosY, double dirX, double dirY);
 	LineMap();
 

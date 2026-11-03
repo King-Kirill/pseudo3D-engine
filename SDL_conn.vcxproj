@@ -155,7 +155,9 @@
     <ClCompile Include="src\SquareMap.cpp" />
     <ClCompile Include="src\TempParams.cpp" />
     <ClCompile Include="src\VectorToLines.cpp" />
-    <ClCompile Include="ThreadPool.cpp" />
+    <ClCompile Include="ThreadPool.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Camera.h" />
@@ -186,7 +188,9 @@
     <ClCompile Include="src\GridDots.cpp" />
     <ClCompile Include="src\LineMap.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClInclude Include="ThreadPool.h" />
+    <ClInclude Include="ThreadPool.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

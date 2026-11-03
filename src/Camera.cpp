@@ -18,8 +18,8 @@ void Camera::DDArayCasting(double dirX, double dirY, double planeX, double plane
 		int player_map_y_thread = player_map_y;
 		double max_dist_thread = max_dist;
 
-		// запускаем поток через лямбда выражение
-		std::thread t([=]()
+		// передаем задачу в пул потоков, чтобы она выполнялась в отдельном потоке
+		auto promise = threadPool->add_task([=]()
 		{
 			this->DDAraycastingThread(
 				dirX_thread, dirY_thread, planeX_thread, planeY_thread,
@@ -96,7 +96,7 @@ void Camera::DDArayCasting(double dirX, double dirY, double planeX, double plane
 		}
 
 		// тоже подумать как оптимизировать, чтобы не ждать пока поток отработает, а сразу вставлять в массив
-		t.join();
+		promise.wait();
 
 		cameraDots.insert(cameraDots.end(),
 			cameraDotsLeft.begin(),
@@ -292,9 +292,27 @@ void Camera::DDArayCounting(double& rayDirX, double& rayDirY, double& sideDistX,
 
 					int wallHeight = int(img_h / allPerpWallDist);
 
+					int drawStart = 0;
+					int drawEnd = 0;
+
+					if (selected_engine_window == "map")
+					{
+						drawStart = (-wallHeight * 0.5) / 2 + additional_window_h / 2;
+						if (drawStart < 0)drawStart = 0;
+						drawEnd = (wallHeight * 0.5) / 2 + additional_window_h / 2;
+						if (drawEnd >= additional_window_h)drawEnd = additional_window_h - 1;
+					}
+					else if (selected_engine_window == "game")
+					{
+						drawStart = -wallHeight / 2 + img_h / 2;
+						if (drawStart < 0)drawStart = 0;
+						drawEnd = wallHeight / 2 + img_h / 2;
+						if (drawEnd >= img_h)drawEnd = img_h - 1;
+					}
+
 					if (cameraDots_local.size() >= (ray_num + 1))
 					{
-						cameraDots_local[ray_num].emplace_back(dotX, dotY, wallHeight, true);
+						cameraDots_local[ray_num].emplace_back(dotX, dotY, wallHeight, true, drawStart, drawEnd);
 
 						// получение ссылки в точку на вектор стены
 						if (line_hit_ptr)
@@ -305,7 +323,7 @@ void Camera::DDArayCounting(double& rayDirX, double& rayDirY, double& sideDistX,
 					else
 					{
 						std::vector<CameraDot> temp_arr;
-						temp_arr.emplace_back(dotX, dotY, wallHeight, true);
+						temp_arr.emplace_back(dotX, dotY, wallHeight, true, drawStart, drawEnd);
 
 						// получение ссылки в точку на вектор стены
 						if (line_hit_ptr)
@@ -407,7 +425,7 @@ void Camera::DDAecho(double dirX, double dirY, double player_x, double player_y,
 
 		double temp_max_echo_dist = max_echo_dist * squareWidth;
 
-		DDArayCounting(rayDirX, rayDirY, sideDistX, sideDistY, deltaDistX, deltaDistY, side, hit, player_x, player_y, player_map_x, player_map_y, temp_max_echo_dist, dirX, dirY, 0, cameraDots, perpWallDist, true);
+		/*DDArayCounting(rayDirX, rayDirY, sideDistX, sideDistY, deltaDistX, deltaDistY, side, hit, player_x, player_y, player_map_x, player_map_y, temp_max_echo_dist, dirX, dirY, 0, cameraDots, perpWallDist, true);*/
 
 		if (hit != 1)
 		{
@@ -441,7 +459,7 @@ void Camera::DDAecho(double dirX, double dirY, double player_x, double player_y,
 	}
 }
 
-void Camera::reserveMemmory()
+void Camera::reserveMemory()
 {
 	cameraDots.resize(img_w);
 
@@ -463,7 +481,7 @@ void Camera::reserveMemmory()
 	}
 }
 
-void Camera::clearReservedMemmory()
+void Camera::clearReservedMemory()
 {
 	for (int i = 0; i < cameraDots.size(); i++)
 	{
@@ -484,15 +502,15 @@ void Camera::clearReservedMemmory()
 }
 
 void Camera::clearCameraDots()
-{ 
-	if (cameraDots.size() != 0) 
-	{ 
-		for (int i = 0; i < cameraDots.size(); i++) 
+{
+	if (cameraDots.size() != 0)
+	{
+		for (int i = 0; i < cameraDots.size(); i++)
 		{
-			cameraDots[i].clear(); 
-		} 
-		cameraDots.clear(); 
-	} 
+			cameraDots[i].clear();
+		}
+		cameraDots.clear();
+	}
 }
 
 CameraDot Camera::getHitDist(double dotX, double dotY, double rayDirX, double rayDirY, double perpWallDist, double& max_dist, double player_x, double player_y, int mapX, int mapY, double dirX, double dirY, LineMap*& line_hit_ptr)

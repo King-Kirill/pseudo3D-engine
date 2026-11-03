@@ -738,7 +738,6 @@ void Game::handleEvents()
 						 delete vectorsMapArray[vectorIndexes[i]]->vectorToLines[k];
 					}
 					vectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
-					previousVectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
 
 					delete vectorsMapArray[vectorIndexes[i]];
 					vectorsMapArray.erase(vectorsMapArray.begin() + vectorIndexes[i]);
@@ -759,6 +758,8 @@ void Game::handleEvents()
 			{
 				vectorsMapArray[vectorIndexes[i]]->endPosX -= squareWidth;
 				vectorsMapArray[vectorIndexes[i]]->startPosX -= squareWidth;
+
+				std::cout << "previous vectors map array: " << previousVectorsMapArray[vectorIndexes[i]]->vectorToLines.size() << std::endl;
 				 
 				if(vectorsMapArray[vectorIndexes[i]]->vectorToLines.size() > 0)
 				{
@@ -768,6 +769,7 @@ void Game::handleEvents()
 					{
 						delete vectorsMapArray[vectorIndexes[i]]->vectorToLines[k];
 					}
+
 					vectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
 					previousVectorsMapArray[vectorIndexes[i]]->vectorToLines.clear();
 

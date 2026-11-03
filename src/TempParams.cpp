@@ -1,6 +1,9 @@
 #include "../headers/TempParams.h"
 #include "../headers/ConstParams.h"
 
+// пул потоков для многопоточной отрисовки
+extern ThreadPool* threadPool = new ThreadPool(1);
+
 //инициализация основных массивов
 GridDots** gridDotsArray = NULL;
 SquareMap** squareMapArray = NULL;
